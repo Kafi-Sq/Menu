@@ -71,23 +71,100 @@ const menu = [
         img: "./images/item-9.jpeg",
         desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
     },
+    {
+        id: 10,
+        title: "steak dinner",
+        category: "dinner",
+        price: 39.99,
+        img: "./images/item-10.jpeg",
+        desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
+    },
 ];
 
-let pageHTML = ''
 
-menu.forEach((menuItem) => {
-    pageHTML += `
-        <article class="menu-item">
-            <img src="${menuItem.img}" class="photo" alt="Menu item">
-            <div class="item-info">
-                <header>
-                    <h4>${menuItem.title}</h4>
-                    <h4 class="price">$${menuItem.price}</h4>
-                </header>
-                <p class="item-text">${menuItem.desc}</p>
-            </div>
-        </article>
-    `
+
+const sectionCenter = document.querySelector('.section-center')
+const container = document.querySelector('.btn-container')
+
+window.addEventListener('DOMContentLoaded', () => {
+    displayMenuItems(menu)
+    displayBtns()
 })
 
-document.querySelector('.section-center').innerHTML = pageHTML
+function displayMenuItems(menuItems) {
+    let displayMenu = menuItems.map((item) => {
+        return `
+            <article class="menu-item">
+                <img src="${item.img}" class="photo" alt="${item.title}">
+                <div class="item-info">
+                    <header>
+                        <h4>${item.title}</h4>
+                        <h4 class="price">$${item.price}</h4>
+                    </header>
+                    <p class="item-text">${item.desc}</p>
+                </div>
+            </article>
+        `
+    })
+    displayMenu = displayMenu.join('')
+    sectionCenter.innerHTML = displayMenu
+}
+
+function displayBtns() {
+    let btnHTML = ''
+    const categories = menu.reduce((values, item) => {
+        if (!values.includes(item.category)) {
+            values.push(item.category)
+        }
+        return values
+    }, ['all'])
+
+    categories.forEach((i) => {
+        btnHTML += `
+            <button class="filter-btn" type="button" data-id="${i}">${i}</button>
+        `
+    })
+    container.innerHTML = btnHTML
+
+    const filterBtns = document.querySelectorAll('.filter-btn')
+    filterBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const filteredMenu = menu.filter((menuItem) => {
+                if (menuItem.category === btn.dataset.id) {
+                    return menuItem
+                }
+            })
+            if (btn.dataset.id === 'all') {
+                displayMenuItems(menu)
+            } else {
+                displayMenuItems(filteredMenu)
+            }
+        })
+    })
+}
+
+
+
+
+
+// function displayFilter(filter) {
+//     let pageHTML = ''
+//     menu.forEach((menuItem) => {
+//         if (menuItem.category === filter) {
+//             pageHTML += `
+//             <article class="menu-item">
+//                 <img src="${menuItem.img}" class="photo" alt="Menu item">
+//                 <div class="item-info">
+//                     <header>
+//                         <h4>${menuItem.title}</h4>
+//                         <h4 class="price">$${menuItem.price}</h4>
+//                     </header>
+//                     <p class="item-text">${menuItem.desc}</p>
+//                 </div>
+//             </article>
+//             `
+//         }
+//     })
+//     document.querySelector('.section-center').innerHTML = pageHTML
+// }
+
